@@ -1,0 +1,124 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 800,
+    "height": 600,
+    "title": "Top 200 University's Reputation score",
+    "data": {
+      "url": "data/2019-QS-World-University-Rankings.csv"
+    },
+    "params": [
+        {
+          "name": "Continent_selection",
+          "bind": {
+            "input": "select",
+            "options": [
+              null,
+              "North America",
+              "South America",
+              "Europe",
+              "Africa",
+              "Asia",
+              "Oceania"
+            ],
+            "labels": [
+              "Show All",
+              "North America",
+              "South America",
+              "Europe",
+              "Africa",
+              "Asia",
+              "Oceania"
+            ],
+            "name": "Continent Selection: "
+          }
+        }
+      ],
+      "transform": [
+        {"filter": "datum.Academic_Reputation > 0"},
+        {"filter": "datum.Employer_Reputation > 0"},
+        {
+          "filter": "Continent_selection == null || datum.Continent == Continent_selection"
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "Academic_Reputation",
+          "type": "quantitative",
+          "title": "Academic Reputation Score",
+          "axis": {"tickCount": 6}
+        },
+        "y": {
+          "field": "Employer_Reputation",
+          "type": "quantitative",
+          "title": "Employer Reputation Score",
+          "axis": {"tickCount": 6}
+        }
+      },
+      "layer": [
+        {
+          "selection": {
+            "continent_highlight": {
+              "type": "multi",
+              "fields": ["Continent"],
+              "bind": "legend"
+            }
+          },
+          "mark": "circle",
+          "encoding": {
+            "color": {
+              "field": "Continent",
+              "type": "nominal",
+              "scale": {
+                "domain": [
+                  "North America",
+                  "South America",
+                  "Europe",
+                  "Africa",
+                  "Asia",
+                  "Oceania"
+                ],
+                "range": [
+                  "#e41a1c",
+                  "#984ea3",
+                  "#ff7f00",
+                  "#a6cee3",
+                  "#377eb8",
+                  "#a65628"
+                ]
+              }
+            },
+            "opacity": {
+              "condition": {"selection": "continent_highlight", "value": 0.8},
+              "value": 0.2
+            },
+            "tooltip": [
+              {"field": "Institution_Name", "type": "nominal"},
+              {"field": "Country", "type": "nominal"},
+              {"field": "Academic_Reputation", "type": "quantitative", "format": ","},
+              {"field": "Employer_Reputation", "type": "quantitative", "format": ","}
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "baseline": "middle",
+            "dx": -6,
+            "fontSize": 11.5,
+            "fontStyle": "italic"
+          },
+          "encoding": {
+            "text": {"field": "Institution_Name", "type": "nominal"},
+            "color": {"value": "black"},
+            "opacity": {
+              "condition": {
+                "test": "datum['Institution_Name'] == 'MASSACHUSETTS INSTITUTE OF TECHNOLOGY (MIT)'|| datum['Institution_Name'] == 'MONASH UNIVERSITY'|| datum['Institution_Name'] == 'STOCKHOLM UNIVERSITY'|| datum['Institution_Name'] == 'UNIVERSITY OF ROCHESTER'|| datum['Institution_Name'] == 'MICHIGAN STATE UNIVERSITY'",
+                "value": 1
+              },
+              "value": 0
+            }
+          }
+        }
+      ]
+    }

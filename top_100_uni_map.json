@@ -1,0 +1,42 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": "Numbers of top 200 university in each country",
+    "width": 1000,
+    "height": 600,
+    "data": {
+      "url": "ne_110m_admin_0_countries.topojson.json",
+      "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
+    },
+    "transform": [
+      {
+        "lookup": "properties.NAME",
+        "from": {
+          "data": {
+            "url": "data/FIT3179_Homework_w9.csv"
+          },
+          "key": "Country",
+          "fields": ["number_of_top_100_University"]
+        }
+      },
+      {"calculate": "toNumber(datum.number_of_top_100_University) + 0", "as": "Number of Uni"}
+  
+    ],
+    "projection": {"type": "equirectangular"},
+    "mark": {"type": "geoshape"},
+    "encoding": {
+      "color": {
+        "field": "Number of Uni",
+        "type": "quantitative",
+        "scale": {
+        "type": "threshold",
+        "domain": [1, 5, 15,30,50],
+        "range":["#EBF7DE", "#C3E79C", "#87CF3A","#68A428","#49731C", "#2A4210"],
+        "scheme": "yellowgreen"
+        }
+      },
+      "tooltip": [
+        {"field": "properties.NAME", "type": "nominal", "title": "Country"},
+        {"field": "Number of Uni", "type": "quantitative"}
+      ]
+    }
+  }
